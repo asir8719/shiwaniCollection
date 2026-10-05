@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import { Link } from "react-router-dom"
-import { MessageCircle, Phone } from "lucide-react"
+import { ArrowRight, MessageCircle, Phone } from "lucide-react"
 import AdvertisementCarousel from "@/components/AdvertisementCarousel"
 import CategoryCarousel from "@/components/CategoryCarousel"
 import SEO from "@/components/SEO"
@@ -56,6 +56,63 @@ const Home = () => {
       />
       <CategoryCarousel />
       <AdvertisementCarousel />
+      <section className="bg-[#f8f5f2]">
+        <div className="wContainer grid gap-8 px-5 py-12 sm:px-8 sm:py-16 lg:grid-cols-[1.15fr_0.85fr] lg:items-center lg:gap-12 lg:px-10 lg:py-20">
+          <div>
+            <p className="mb-3 text-xs font-semibold uppercase tracking-[0.18em] text-[#9f2089]">
+              Welcome to Shiwani Collection
+            </p>
+            <h1 className="max-w-2xl text-3xl font-semibold leading-tight text-gray-950 sm:text-4xl lg:text-5xl">
+              Find a style that feels like you.
+            </h1>
+            <p className="mt-4 max-w-xl text-base leading-7 text-gray-600 sm:text-lg">
+              Explore thoughtfully selected styles and fabrics, discover pieces by category, and get in touch with us directly when something catches your eye.
+            </p>
+            <div className="mt-7 flex flex-wrap gap-3">
+              <Link
+                to="/product"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded bg-gray-950 px-5 text-sm font-semibold text-white transition-colors hover:bg-gray-800 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-950 focus-visible:ring-offset-2"
+              >
+                Explore the collection <ArrowRight className="size-4" />
+              </Link>
+              <a
+                href={getWhatsAppUrl("Hi, I'd like to know more about Shiwani Collection.")}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex min-h-11 items-center justify-center gap-2 rounded border border-gray-300 bg-white px-5 text-sm font-semibold text-gray-900 transition-colors hover:bg-gray-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16874c] focus-visible:ring-offset-2"
+              >
+                <MessageCircle className="size-4 text-[#16874c]" /> Ask us on WhatsApp
+              </a>
+            </div>
+          </div>
+          <div className="rounded-md border border-[#e8ded8] bg-white p-6 shadow-sm sm:p-8">
+            <p className="text-sm font-semibold text-[#9f2089]">A simple way to shop</p>
+            <ol className="mt-5 space-y-5">
+              <li className="flex gap-4">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#f8f1f7] text-sm font-semibold text-[#9f2089]">1</span>
+                <div>
+                  <h2 className="font-semibold text-gray-900">Explore your way</h2>
+                  <p className="mt-1 text-sm leading-6 text-gray-600">Browse all products or start with a category that interests you.</p>
+                </div>
+              </li>
+              <li className="flex gap-4">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#f8f1f7] text-sm font-semibold text-[#9f2089]">2</span>
+                <div>
+                  <h2 className="font-semibold text-gray-900">Find the details</h2>
+                  <p className="mt-1 text-sm leading-6 text-gray-600">Open a product to see its price and current availability.</p>
+                </div>
+              </li>
+              <li className="flex gap-4">
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-full bg-[#f8f1f7] text-sm font-semibold text-[#9f2089]">3</span>
+                <div>
+                  <h2 className="font-semibold text-gray-900">Enquire directly</h2>
+                  <p className="mt-1 text-sm leading-6 text-gray-600">Message us on WhatsApp or call to ask about a product.</p>
+                </div>
+              </li>
+            </ol>
+          </div>
+        </div>
+      </section>
 
       <section className="wContainer py-8 sm:py-10" aria-labelledby="featured-products-title">
         <div className="mb-5 flex items-end justify-between gap-4">
@@ -158,6 +215,23 @@ const Home = () => {
         <div className="mt-7 text-center">
           <Link to="/product" className="text-sm font-semibold text-gray-900 underline decoration-gray-300 underline-offset-4 transition-colors hover:text-[#9f2089]">
             Browse all products
+          </Link>
+        </div>
+      </section>
+      <section className="wContainer px-5 pb-10 sm:px-8 lg:px-10" aria-labelledby="about-collection-title">
+        <div className="rounded-md bg-[#17211d] px-6 py-8 text-white sm:px-9 sm:py-10">
+          <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#e6a6dc]">A little about us</p>
+          <h2 id="about-collection-title" className="mt-2 text-2xl font-semibold sm:text-3xl">
+            Style, discovered at your pace.
+          </h2>
+          <p className="mt-3 max-w-3xl text-sm leading-6 text-white/75 sm:text-base sm:leading-7">
+            Shiwani Collection makes it easy to explore the pieces we have available. Take a look through the latest collection, find a style you love, and reach out to us personally for help with your enquiry.
+          </p>
+          <Link
+            to="/product"
+            className="mt-5 inline-flex items-center gap-2 text-sm font-semibold text-white underline decoration-white/40 underline-offset-4 transition-colors hover:decoration-white"
+          >
+            Browse all products <ArrowRight className="size-4" />
           </Link>
         </div>
       </section>

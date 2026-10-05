@@ -21,10 +21,14 @@ interface Category {
 const ProductListing = () => {
   const [searchParams] = useSearchParams()
   const categorySlug = searchParams.get("category")
-  const [products, setProducts] = useState<Product[]>([])
+  const searchTerm = searchParams.get("search")?.trim() ?? ""
+  const requestKey = JSON.stringify([categorySlug, searchTerm])
+  const [result, setResult] = useState<{
+    key: string
+    products: Product[]
+    failed: boolean
+  } | null>(null)
   const [category, setCategory] = useState<Category | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [loadFailed, setLoadFailed] = useState(false)
 
   useEffect(() => {
     let isMounted = true
@@ -41,14 +45,13 @@ const ProductListing = () => {
 
         if (!isMounted) return
         if (categoryError) {
-          setLoadFailed(true)
-          setLoading(false)
+          console.error("Failed to load product category:", categoryError.message)
+          setResult({ key: requestKey, products: [], failed: true })
           return
         }
         if (!foundCategory) {
           setCategory(null)
-          setProducts([])
-          setLoading(false)
+          setResult({ key: requestKey, products: [], failed: false })
           return
         }
 
@@ -65,46 +68,67 @@ const ProductListing = () => {
         .order("id", { ascending: false })
 
       if (categoryId !== null) query = query.eq("category_id", categoryId)
+      if (searchTerm) {
+        const escapedSearchTerm = searchTerm.replace(/[\\%_]/g, "\\$&")
+        query = query.ilike("name", `%${escapedSearchTerm}%`)
+      }
 
       const { data, error } = await query
       if (!isMounted) return
 
       if (error) {
         console.error("Failed to load products:", error.message)
-        setLoadFailed(true)
+        setResult({ key: requestKey, products: [], failed: true })
       } else {
-        setProducts(data ?? [])
+        setResult({ key: requestKey, products: data ?? [], failed: false })
       }
-      setLoading(false)
     }
 
-    setLoading(true)
-    setLoadFailed(false)
     void fetchProducts()
     return () => {
       isMounted = false
     }
-  }, [categorySlug])
+  }, [categorySlug, requestKey, searchTerm])
 
-  const title = category?.name ?? "All products"
-  const pageTitle = category
-    ? `${category.name} | Shiwani Collection`
-    : "Shop All Products | Shiwani Collection"
-  const pageDescription = category
-    ? `Browse ${category.name} from Shiwani Collection and contact us directly to enquire.`
-    : "Browse all available styles from Shiwani Collection and contact us directly to enquire."
+  const currentResult = result?.key === requestKey ? result : null
+  const products = currentResult?.products ?? []
+  const loading = currentResult === null
+  const loadFailed = currentResult?.failed ?? false
+  const currentCategory = category?.slug === categorySlug ? category : null
+  const pageTitle = searchTerm
+    ? `Search results for "${searchTerm}" | Shiwani Collection`
+    : currentCategory
+      ? `${currentCategory.name} | Shiwani Collection`
+      : "Shop All Products | Shiwani Collection"
+  const pageDescription = searchTerm
+    ? `Products matching "${searchTerm}" at Shiwani Collection.`
+    : currentCategory
+      ? `Browse ${currentCategory.name} from Shiwani Collection and contact us directly to enquire.`
+      : "Browse all available styles from Shiwani Collection and contact us directly to enquire."
   const canonicalPath = categorySlug
     ? `/product?category=${encodeURIComponent(categorySlug)}`
     : "/product"
+  const listingTitle = searchTerm
+    ? `Search results for "${searchTerm}"`
+    : currentCategory?.name ?? "All products"
 
   return (
     <>
-    <SEO title={pageTitle} description={pageDescription} canonicalPath={canonicalPath} />
+    <SEO
+      title={pageTitle}
+      description={pageDescription}
+      canonicalPath={canonicalPath}
+      noindex={Boolean(searchTerm)}
+    />
     <section className="mx-auto max-w-300 py-5 sm:py-8" aria-labelledby="product-listing-title">
       <div className="mb-6 border-b border-gray-200 pb-5">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#9f2089]">Siwani Collection</p>
-        <h1 id="product-listing-title" className="mt-2 text-2xl font-semibold text-gray-950 sm:text-3xl">{title}</h1>
-        <p className="mt-2 text-sm text-gray-600">Browse the collection and contact us directly to enquire.</p>
+        <h1 id="product-listing-title" className="mt-2 text-2xl font-semibold text-gray-950 sm:text-3xl">{listingTitle}</h1>
+        <p className="mt-2 text-sm text-gray-600">
+          {searchTerm
+            ? `Products matching "${searchTerm}". Browse the results and contact us directly to enquire.`
+            : "Browse the collection and contact us directly to enquire."}
+        </p>
       </div>
 
       {loading ? (
@@ -121,7 +145,11 @@ const ProductListing = () => {
         <p className="py-12 text-center text-sm text-gray-500">Products are temporarily unavailable. Please try again shortly.</p>
       ) : products.length === 0 ? (
         <p className="py-12 text-center text-sm text-gray-500">
-          {category ? "There are no products in this category yet." : "New pieces are on their way. Check back soon."}
+          {searchTerm
+            ? `No products found for "${searchTerm}". Try a different search.`
+            : currentCategory
+              ? "There are no products in this category yet."
+              : "New pieces are on their way. Check back soon."}
         </p>
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 sm:gap-5 lg:grid-cols-4">

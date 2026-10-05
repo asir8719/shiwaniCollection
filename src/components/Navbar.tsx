@@ -1,10 +1,18 @@
-import { Link, NavLink } from "react-router-dom";
+import type { FormEvent } from "react";
+import { Link, NavLink, useNavigate, useSearchParams } from "react-router-dom";
 import logo from "../assets/logo/siwani_collection.png";
-import { CiSearch } from "react-icons/ci";
-import { useState } from "react";
+import { Search } from "lucide-react";
 
 const Navbar = () => {
-  const[searchTerm, setSearchTerm] = useState('');
+  const [searchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const handleSearch = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const formData = new FormData(event.currentTarget);
+    const query = String(formData.get("search") ?? "").trim();
+    navigate(query ? `/product?search=${encodeURIComponent(query)}` : "/product");
+  };
   
   return (
     <header className="w-full bg-white border-b-2 border-b-[#cecede]">  
@@ -29,10 +37,28 @@ const Navbar = () => {
           </li>
         </ul>
 
-        <div className="flex h-10 min-w-0 flex-1 items-center rounded border border-gray-500 px-3 md:max-w-60 lg:max-w-60 lg:flex-none">
-          <CiSearch className="mr-2 text-2xl" />
-          <input className="h-full min-w-0 flex-1 outline-none" type="text" name="search" id="product-search" placeholder="Search..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)} />
-        </div>
+        <form
+          role="search"
+          onSubmit={handleSearch}
+          className="flex h-10 min-w-0 flex-1 items-center rounded border border-gray-500 px-3 md:max-w-60 lg:max-w-60 lg:flex-none"
+        >
+          <label className="sr-only" htmlFor="product-search">Search products</label>
+          <Search aria-hidden="true" className="mr-2 size-5 shrink-0 text-gray-600" />
+          <input
+            className="h-full min-w-0 flex-1 outline-none"
+            type="search"
+            name="search"
+            id="product-search"
+            placeholder="Search products..."
+            defaultValue={searchParams.get("search") ?? ""}
+          />
+          <button
+            type="submit"
+            className="ml-2 text-sm font-medium text-[#9f2089] hover:underline focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9f2089]"
+          >
+            Search
+          </button>
+        </form>
       </nav>
     </header>
   )
