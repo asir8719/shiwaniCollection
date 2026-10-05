@@ -3,6 +3,7 @@ import { Link } from "react-router-dom"
 import { MessageCircle, Phone } from "lucide-react"
 import AdvertisementCarousel from "@/components/AdvertisementCarousel"
 import CategoryCarousel from "@/components/CategoryCarousel"
+import SEO from "@/components/SEO"
 import { formatPrice, getWhatsAppUrl, storePhone } from "@/lib/storefront"
 import { supabase } from "@/lib/supabaseClient"
 
@@ -48,6 +49,11 @@ const Home = () => {
 
   return (
     <>
+      <SEO
+        title="Shiwani Collection | Thoughtful Styles, Timeless Fabrics"
+        description="Discover thoughtfully selected styles and fabrics at Shiwani Collection. Browse the latest collection and enquire directly."
+        canonicalPath="/"
+      />
       <CategoryCarousel />
       <AdvertisementCarousel />
 
@@ -110,13 +116,13 @@ const Home = () => {
                     <p className="mt-1 text-base font-semibold text-gray-900">
                       {formatPrice(product.price)}
                     </p>
-                    <div className="mt-3 grid grid-cols-2 gap-2">
+                    <div className="mt-3 grid lg:grid-cols-2 gap-2 ">
                       <a
                         href={whatsappUrl}
                         target="_blank"
                         rel="noreferrer"
                         aria-label={`Enquire about ${product.name} on WhatsApp`}
-                        className="inline-flex min-h-10 items-center justify-center gap-1.5 rounded border border-[#16874c] px-2 text-xs font-medium text-[#147442] transition-colors hover:bg-[#eaf6ee] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16874c]"
+                        className="inline-flex overflow-hidden min-h-10 items-center justify-center gap-1.5 rounded border border-[#16874c] px-2 text-xs font-medium text-[#147442] transition-colors hover:bg-[#eaf6ee] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#16874c]"
                       >
                         <MessageCircle className="size-4 shrink-0" />
                         WhatsApp

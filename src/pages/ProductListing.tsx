@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react"
 import { Link, useSearchParams } from "react-router-dom"
 import { MessageCircle, Phone } from "lucide-react"
+import SEO from "@/components/SEO"
 import { formatPrice, getWhatsAppUrl, storePhone } from "@/lib/storefront"
 import { supabase } from "@/lib/supabaseClient"
 
@@ -86,8 +87,19 @@ const ProductListing = () => {
   }, [categorySlug])
 
   const title = category?.name ?? "All products"
+  const pageTitle = category
+    ? `${category.name} | Shiwani Collection`
+    : "Shop All Products | Shiwani Collection"
+  const pageDescription = category
+    ? `Browse ${category.name} from Shiwani Collection and contact us directly to enquire.`
+    : "Browse all available styles from Shiwani Collection and contact us directly to enquire."
+  const canonicalPath = categorySlug
+    ? `/product?category=${encodeURIComponent(categorySlug)}`
+    : "/product"
 
   return (
+    <>
+    <SEO title={pageTitle} description={pageDescription} canonicalPath={canonicalPath} />
     <section className="mx-auto max-w-300 py-5 sm:py-8" aria-labelledby="product-listing-title">
       <div className="mb-6 border-b border-gray-200 pb-5">
         <p className="text-xs font-semibold uppercase tracking-[0.16em] text-[#9f2089]">Siwani Collection</p>
@@ -159,6 +171,7 @@ const ProductListing = () => {
         </div>
       )}
     </section>
+    </>
   )
 }
 
